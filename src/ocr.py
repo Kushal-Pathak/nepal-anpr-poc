@@ -1,5 +1,11 @@
 import easyocr
 
+DEVANAGARI_CHARACTERS = "".join(
+    chr(code)
+    for code in range(0x0900, 0x0980)
+)
+
+PLATE_ALLOWLIST = DEVANAGARI_CHARACTERS + ".-"
 
 reader = easyocr.Reader(
     ["ne"],
@@ -28,7 +34,12 @@ def normalize_digits(text):
 
 
 def recognize_plate(image_path):
-    results = reader.readtext(image_path)
+    results = reader.readtext(
+        image_path,
+        allowlist=PLATE_ALLOWLIST,
+        decoder="beamsearch",
+        beamWidth=5,
+    )
 
     if not results:
         return {
