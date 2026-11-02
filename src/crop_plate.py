@@ -1,6 +1,6 @@
 import cv2
 
-image_path = "samples/vehicle.jpeg"
+image_path = "samples/vehicle.jpg"
 
 image = cv2.imread(image_path)
 
@@ -12,9 +12,9 @@ height, width, _ = image.shape
 print(f"Image size: {width} x {height}")
 
 # Temporary manual coordinates
-x1 = 480
-y1 = 747
-x2 = 585
+x1 = 250
+y1 = 650
+x2 = 560
 y2 = 818
 
 plate = image[y1:y2, x1:x2]
