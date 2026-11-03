@@ -305,3 +305,12 @@ if front_file and rear_file:
                 os.unlink(
                     rear_temp.name
                 )
+
+
+# ---------------------------------------------------------
+# FOOTER
+# ---------------------------------------------------------
+
+st.divider()
+
+st.caption("Created by Kushal Pathak")
