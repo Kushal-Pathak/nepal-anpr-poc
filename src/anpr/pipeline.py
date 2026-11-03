@@ -1,13 +1,13 @@
 import cv2
 
-from .detector import detect_plate
+from .detector import detect_rear_plate
 from .ocr import recognize_rear_plate
 
 
 def recognize_vehicle(image_path):
 
     # Step 1: detect plate
-    detection = detect_plate(image_path)
+    detection = detect_rear_plate(image_path)
 
     if detection is None:
         return {
