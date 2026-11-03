@@ -170,3 +170,10 @@ def recognize_plate(image_path):
         "top_text": top_text,
         "bottom_text": bottom_text,
     }
+
+def normalize_spacing(text):
+    text = text.replace(".", " ")
+    text = text.replace(":", " ")
+    text = text.replace("ः", " ")
+
+    return " ".join(text.split())

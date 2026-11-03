@@ -54,3 +54,33 @@ def recognize_vehicle(image_path):
         "normalized_text": ocr_result["normalized_text"],
         "ocr_confidence": ocr_result["confidence"],
     }
+
+from .matcher import compare_plates
+
+
+def recognize_vehicle_pair(front_image_path, rear_image_path):
+
+    front_result = recognize_vehicle(front_image_path)
+    rear_result = recognize_vehicle(rear_image_path)
+
+    # If either side fails, we still return both results.
+    if not front_result["success"] or not rear_result["success"]:
+        return {
+            "success": False,
+            "front": front_result,
+            "rear": rear_result,
+            "match": None,
+            "error": "Could not recognize both vehicle images",
+        }
+
+    match_result = compare_plates(
+        front_result["normalized_text"],
+        rear_result["normalized_text"],
+    )
+
+    return {
+        "success": True,
+        "front": front_result,
+        "rear": rear_result,
+        "match": match_result,
+    }
