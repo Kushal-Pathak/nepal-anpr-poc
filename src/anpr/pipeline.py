@@ -1,7 +1,7 @@
 import cv2
 
 from .detector import detect_plate
-from .ocr import recognize_plate
+from .ocr import recognize_rear_plate
 
 
 def recognize_vehicle(image_path):
@@ -34,7 +34,7 @@ def recognize_vehicle(image_path):
     )
 
     # Step 3: OCR
-    ocr_result = recognize_plate(
+    ocr_result = recognize_rear_plate(
         plate_path
     )
 

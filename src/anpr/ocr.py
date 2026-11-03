@@ -117,7 +117,7 @@ def read_top_from_full_plate(image):
 # COMPLETE PLATE RECOGNITION
 # ---------------------------------------------------------
 
-def recognize_plate(image_path):
+def recognize_rear_plate(image_path):
     image = cv2.imread(image_path)
 
     if image is None:
@@ -169,6 +169,66 @@ def recognize_plate(image_path):
         "confidence": confidence,
         "top_text": top_text,
         "bottom_text": bottom_text,
+    }
+
+def recognize_front_plate(image_path):
+    image = cv2.imread(image_path)
+
+    if image is None:
+        raise ValueError(
+            f"Could not load front plate: {image_path}"
+        )
+
+    # Front plates are thin and single-line.
+    image = cv2.resize(
+        image,
+        None,
+        fx=3,
+        fy=3,
+        interpolation=cv2.INTER_CUBIC,
+    )
+
+    results = reader.readtext(
+        image,
+        allowlist=DEVANAGARI_CHARACTERS + ".:",
+        decoder="beamsearch",
+        beamWidth=5,
+    )
+
+    if not results:
+        return {
+            "raw_text": "",
+            "normalized_text": "",
+            "confidence": 0.0,
+        }
+
+    # Front plate is one horizontal line.
+    results = sorted(
+        results,
+        key=lambda item: item[0][0][0],
+    )
+
+    texts = []
+    confidences = []
+
+    for _, text, confidence in results:
+        texts.append(text)
+        confidences.append(confidence)
+
+    raw_text = " ".join(texts)
+
+    normalized_text = normalize_digits(
+        raw_text
+    )
+
+    confidence = (
+        sum(confidences) / len(confidences)
+    )
+
+    return {
+        "raw_text": raw_text,
+        "normalized_text": normalized_text,
+        "confidence": confidence,
     }
 
 def normalize_spacing(text):
