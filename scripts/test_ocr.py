@@ -1,4 +1,4 @@
-from ocr import recognize_plate
+from src.anpr.ocr import recognize_plate
 
 
 result = recognize_plate(

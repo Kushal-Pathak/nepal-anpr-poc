@@ -1,6 +1,6 @@
 import cv2
 
-image_path = "outputs/plate_crop.jpeg"
+image_path = "outputs/plate_pipeline.png"
 
 image = cv2.imread(image_path)
 

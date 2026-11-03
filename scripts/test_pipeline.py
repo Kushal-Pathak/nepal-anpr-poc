@@ -1,7 +1,7 @@
-from pipeline import recognize_vehicle
+from src.anpr.pipeline import recognize_vehicle
 
 
-image_path = "samples/vehicle.jpg"
+image_path = "samples/test_02.jpg"
 
 result = recognize_vehicle(image_path)
 

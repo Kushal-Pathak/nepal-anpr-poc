@@ -1,6 +1,6 @@
 import cv2
 
-from detector import detect_plate
+from src.anpr.detector import detect_plate
 
 
 image_path = "samples/vehicle.jpg"

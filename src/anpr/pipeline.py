@@ -1,7 +1,7 @@
 import cv2
 
-from detector import detect_plate
-from ocr import recognize_plate
+from .detector import detect_plate
+from .ocr import recognize_plate
 
 
 def recognize_vehicle(image_path):
@@ -37,6 +37,14 @@ def recognize_vehicle(image_path):
     ocr_result = recognize_plate(
         plate_path
     )
+
+    if not ocr_result["raw_text"]:
+        return {
+            "success": False,
+            "error": "Plate detected, but OCR could not recognize any text",
+            "box": detection["box"],
+            "detection_confidence": detection["confidence"],
+        }
 
     return {
         "success": True,
