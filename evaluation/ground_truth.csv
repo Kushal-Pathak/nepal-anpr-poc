@@ -1,0 +1,5 @@
+id,front_image,rear_image,ground_truth
+img_01,samples/img_01_front.jpeg,samples/img_01_back.jpeg,बा प्र ०६ ००४प ५६६६
+img_02,samples/img_02_front.jpeg,samples/img_02_back.jpeg,ना ३४ प ३१६
+img_03,samples/img_03_front.jpeg,samples/img_03_back.jpeg,ना ४२ प ४८२५
+img_04,samples/img_04_front.jpeg,samples/img_04_back.jpeg,लु ३७ प ६३५६

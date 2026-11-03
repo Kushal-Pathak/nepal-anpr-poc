@@ -1,29 +1,65 @@
+import re
+import unicodedata
 from difflib import SequenceMatcher
 
 
+NEPALI_TO_ASCII = str.maketrans(
+    {
+        "०": "0",
+        "१": "1",
+        "२": "2",
+        "३": "3",
+        "४": "4",
+        "५": "5",
+        "६": "6",
+        "७": "7",
+        "८": "8",
+        "९": "9",
+    }
+)
+
+
 def canonicalize_plate(text):
-    """
-    Remove spaces and punctuation before comparison.
-    """
+    if not text:
+        return ""
 
-    characters_to_remove = " .:-"
+    text = unicodedata.normalize(
+        "NFC",
+        text,
+    )
 
-    result = text
+    # Convert Nepali digits to ASCII.
+    text = text.translate(
+        NEPALI_TO_ASCII
+    )
 
-    for char in characters_to_remove:
-        result = result.replace(char, "")
+    # Remove separators/punctuation that do not
+    # affect the actual plate identity.
+    text = re.sub(
+        r"[\s\.\-:ः,;/\\|]+",
+        "",
+        text,
+    )
 
-    return result
+    return text
 
 
-def compare_plates(front_text, rear_text):
-    front = canonicalize_plate(front_text)
-    rear = canonicalize_plate(rear_text)
+def compare_plates(
+    front_text,
+    rear_text,
+):
+    front = canonicalize_plate(
+        front_text
+    )
+
+    rear = canonicalize_plate(
+        rear_text
+    )
 
     if not front or not rear:
         return {
-            "match": False,
             "status": "insufficient_data",
+            "match": False,
             "similarity": 0.0,
         }
 
@@ -46,9 +82,7 @@ def compare_plates(front_text, rear_text):
         match = False
 
     return {
-        "match": match,
         "status": status,
+        "match": match,
         "similarity": similarity,
-        "front": front,
-        "rear": rear,
     }

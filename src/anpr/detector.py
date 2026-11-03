@@ -8,8 +8,8 @@ from ultralytics import YOLO
 # MODELS
 # ---------------------------------------------------------
 
-# Generic license-plate detector.
-# Works better for our long, thin front plates.
+# Generic detector:
+# performs better on the long, thin front plates.
 front_weights_path = hf_hub_download(
     repo_id="Koushim/yolov8-license-plate-detection",
     filename="best.pt",
@@ -18,8 +18,8 @@ front_weights_path = hf_hub_download(
 front_model = YOLO(front_weights_path)
 
 
-# Nepal-specific detector.
-# Works better for our rear plates.
+# Nepal-specific detector:
+# performs better on rear Nepali plates.
 rear_model = YOLO(
     "models/nepali_plate_detector.pt"
 )
@@ -27,6 +27,7 @@ rear_model = YOLO(
 
 # ---------------------------------------------------------
 # COMMON DETECTION LOGIC
+# Used for rear plates.
 # ---------------------------------------------------------
 
 def _detect_best_plate(
@@ -50,20 +51,9 @@ def _detect_best_plate(
 
     result = results[0]
 
-    print(f"Candidates: {len(result.boxes)}")
-
-    for box in result.boxes:
-        print(
-            "Candidate:",
-            box.xyxy[0].tolist(),
-            "confidence:",
-            float(box.conf[0]),
-        )
-
     if len(result.boxes) == 0:
         return None
 
-    # Choose the highest-confidence prediction.
     best_box = max(
         result.boxes,
         key=lambda box: float(box.conf[0]),
@@ -106,6 +96,8 @@ def detect_front_plate(image_path):
             f"Could not load image: {image_path}"
         )
 
+    # Low threshold because the generic model has relatively
+    # low confidence on Nepali front plates.
     results = front_model.predict(
         source=image,
         conf=0.05,
@@ -126,7 +118,9 @@ def detect_front_plate(image_path):
             box.xyxy[0].tolist(),
         )
 
-        confidence = float(box.conf[0])
+        confidence = float(
+            box.conf[0]
+        )
 
         width = x2 - x1
         height = y2 - y1
@@ -136,7 +130,8 @@ def detect_front_plate(image_path):
 
         aspect_ratio = width / height
 
-        # Front plates are usually long and thin.
+        # Nepal front plates in our POC are long and thin.
+        # Reject square/tall low-confidence false positives.
         if aspect_ratio < 3.0:
             continue
 
@@ -173,6 +168,7 @@ def detect_front_plate(image_path):
         "crop": crop,
         "image": image,
     }
+
 
 # ---------------------------------------------------------
 # REAR DETECTION

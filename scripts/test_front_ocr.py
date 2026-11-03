@@ -15,12 +15,15 @@ reader = easyocr.Reader(
 )
 
 
-image_path = "outputs/front_plate_candidate_0.jpg"
+image_path = "outputs/front_plate_pipeline.png"
 
 image = cv2.imread(image_path)
 
 if image is None:
     raise ValueError("Could not load front plate crop")
+
+height, width, _ = image.shape
+print(f"Crop size: {width} x {height}")
 
 
 # Simple resize only.
